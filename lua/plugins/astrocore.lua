@@ -107,32 +107,23 @@ return {
         ["<Leader>b"] = { desc = "Buffers" },
         -- quick save
         -- ["<C-s>"] = { ":w!<cr>", desc = "Save File" },  -- change description but the same command
-        ["<leader>bn"] = { "<cmd>tabnew<cr>", desc = "New tab" },
-        ["<leader>bD"] = {
-          function()
-            require("astronvim.utils.status").heirline.buffer_picker(
-              function(bufnr) require("astronvim.utils.buffer").close(bufnr) end
-            )
-          end,
-          desc = "Pick to close",
-        },
-        ["<leader>b"] = { name = "Buffers" },
-        ["<leader>pf"] = { function() require("user.utils").copy(vim.fn.expand "%:p") end, desc = "Yank full path" },
-        ["<leader>pF"] = {
+        ["<Leader>bn"] = { "<cmd>tabnew<cr>", desc = "New tab" },
+        ["<Leader>pf"] = { function() require("user.utils").copy(vim.fn.expand "%:p") end, desc = "Yank full path" },
+        ["<Leader>pF"] = {
           function() require("user.utils").copy(vim.fn.expand "%:p" .. ":" .. vim.fn.line ".") end,
           desc = "Yank full path with line",
         },
-        ["<leader>pr"] = { function() require("user.utils").copy(vim.fn.expand "%") end, desc = "Yank relative path" },
-        ["<leader>pR"] = {
+        ["<Leader>pr"] = { function() require("user.utils").copy(vim.fn.expand "%") end, desc = "Yank relative path" },
+        ["<Leader>pR"] = {
           function() require("user.utils").copy(vim.fn.expand "%" .. ":" .. vim.fn.line ".") end,
           desc = "Yank relative path with line",
         },
-        ["<leader>bX"] = {
-          function() require("astronvim.utils.buffer").close_all(false, false) end,
+        ["<Leader>bX"] = {
+          function() require("astrocore.buffer").close_all(false, false) end,
           desc = "Close all buffers without saving",
         },
-        ["<leader>m"] = { "<cmd>MundoToggle<cr>", desc = "MundoToggle" },
-        ["<leader>fj"] = { "<cmd>AnyJump<cr>", desc = "Show definition references" },
+        ["<Leader>m"] = { "<cmd>MundoToggle<cr>", desc = "MundoToggle" },
+        ["<Leader>fj"] = { "<cmd>AnyJump<cr>", desc = "Show definition references" },
       },
       t = {
         -- setting a mapping to false will disable it
@@ -141,7 +132,66 @@ return {
       x = {
         ["v"] = { "<Plug>(expand_region_expand)" },
         ["V"] = { "<Plug>(expand_region_shrink)" },
-        ["<leader>fj"] = { "<cmd>AnyJump<cr>", desc = "Show definition references" },
+        ["<Leader>fj"] = { "<cmd>AnyJump<cr>", desc = "Show definition references" },
+      },
+    },
+    autocmds = {
+      user_group = {
+        {
+          event = "FocusGained",
+          pattern = "*",
+          desc = "Check if file changed when its window is focus, more eager than 'autoread'",
+          group = "user_group",
+          callback = function() vim.api.nvim_command "checktime" end,
+        },
+        {
+          event = { "BufWritePre", "FileWritePre" },
+          pattern = "*",
+          desc = "Create missing parent directories",
+          group = "user_group",
+          callback = function() vim.api.nvim_command "silent! call mkdir(expand('<afile>:p:h'), 'p')" end,
+        },
+        {
+          event = "FileType",
+          pattern = "csv",
+          desc = "Disable autocomplete on CSVs",
+          group = "user_group",
+          callback = function() require("cmp").setup.buffer { enabled = false } end,
+        },
+      },
+      toggle_line_numbers = {
+        {
+          event = "InsertEnter",
+          pattern = "*",
+          desc = "Use absolute line numbers",
+          group = "toggle_line_numbers",
+          command = "setlocal norelativenumber",
+        },
+        {
+          event = "InsertLeave",
+          pattern = "*",
+          desc = "Use relative line numbers",
+          group = "toggle_line_numbers",
+          command = "setlocal relativenumber",
+        },
+      },
+      user_persistent_undo = {
+        {
+          event = "BufWritePre",
+          pattern = { "/tmp/*", "COMMIT_EDITMSG", "MERGE_MSG", "*.tmp", "*.bak" },
+          desc = "Do not create undo file",
+          group = "user_persistent_undo",
+          command = "setlocal noundofile",
+        },
+      },
+      user_secure = {
+        {
+          event = { "BufNewFile", "BufReadPre" },
+          pattern = { "/tmp/*", vim.env.TMPDIR .. "/*", "*/shm/*", "/private/var/*", ".vault.vim" },
+          desc = "Disable swap/undo/viminfo/shada files in temp directories or shm",
+          group = "user_secure",
+          command = "setlocal noswapfile noundofile nobackup nowritebackup viminfo= shada=",
+        },
       },
     },
   },
