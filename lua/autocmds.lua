@@ -14,7 +14,7 @@ autocmd({ "BufWritePre", "FileWritePre" }, {
   desc = "Create missing parent directories",
   group = user_group,
   pattern = "*",
-  callback = function() 
+  callback = function()
     vim.api.nvim_command("silent! call mkdir(expand('<afile>:p:h'), 'p')")
   end,
 })
