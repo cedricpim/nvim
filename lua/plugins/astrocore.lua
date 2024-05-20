@@ -14,6 +14,12 @@ os.execute("mkdir -p " .. cache_dir .. "/backup")
 os.execute("mkdir -p " .. cache_dir .. "/view")
 os.execute("mkdir -p " .. data_dir .. "/spell")
 
+local function copy(value)
+  vim.fn.setreg("+", value)
+
+  require("astrocore").notify('Copied "' .. value .. '" to the clipboard!')
+end
+
 return {
   "AstroNvim/astrocore",
   ---@type AstroCoreOpts
@@ -108,14 +114,14 @@ return {
         -- quick save
         -- ["<C-s>"] = { ":w!<cr>", desc = "Save File" },  -- change description but the same command
         ["<Leader>bn"] = { "<cmd>tabnew<cr>", desc = "New tab" },
-        ["<Leader>pf"] = { function() require("user.utils").copy(vim.fn.expand "%:p") end, desc = "Yank full path" },
+        ["<Leader>pf"] = { function() copy(vim.fn.expand "%:p") end, desc = "Yank full path" },
         ["<Leader>pF"] = {
-          function() require("user.utils").copy(vim.fn.expand "%:p" .. ":" .. vim.fn.line ".") end,
+          function() copy(vim.fn.expand "%:p" .. ":" .. vim.fn.line ".") end,
           desc = "Yank full path with line",
         },
-        ["<Leader>pr"] = { function() require("user.utils").copy(vim.fn.expand "%") end, desc = "Yank relative path" },
+        ["<Leader>pr"] = { function() copy(vim.fn.expand "%") end, desc = "Yank relative path" },
         ["<Leader>pR"] = {
-          function() require("user.utils").copy(vim.fn.expand "%" .. ":" .. vim.fn.line ".") end,
+          function() copy(vim.fn.expand "%" .. ":" .. vim.fn.line ".") end,
           desc = "Yank relative path with line",
         },
         ["<Leader>bX"] = {
