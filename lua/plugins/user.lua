@@ -93,6 +93,7 @@ return {
   { "jamestthompson3/nvim-remote-containers", lazy = false },
   { "lambdalisue/suda.vim", lazy = false, init = function() vim.g.suda_smart_edit = 1 end },
   { "MTDL9/vim-log-highlighting", lazy = false, ft = "log" },
+  { "dylanaraps/wal.vim", lazy = false },
   {
     "vimwiki/vimwiki",
     lazy = false,
