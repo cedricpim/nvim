@@ -8,11 +8,17 @@
 local cache_dir = vim.fn.expand(vim.env.XDG_CACHE_HOME) .. "/nvim"
 local data_dir = vim.fn.expand(vim.env.XDG_DATA_HOME) .. "/nvim"
 
-os.execute("mkdir -p " .. cache_dir .. "/swap")
-os.execute("mkdir -p " .. cache_dir .. "/undo")
-os.execute("mkdir -p " .. cache_dir .. "/backup")
-os.execute("mkdir -p " .. cache_dir .. "/view")
-os.execute("mkdir -p " .. data_dir .. "/spell")
+if vim.env.XDG_CACHE_HOME then
+  os.execute("mkdir -p " .. cache_dir .. "/swap")
+  os.execute("mkdir -p " .. cache_dir .. "/undo")
+  os.execute("mkdir -p " .. cache_dir .. "/backup")
+  os.execute("mkdir -p " .. cache_dir .. "/view")
+end
+
+if vim.env.XDG_DATA_HOME then os.execute("mkdir -p " .. data_dir .. "/spell") end
+
+local tmpdirs = { "/tmp/*", "*/shm/*", "/private/var/*", ".vault.vim" }
+if vim.env.TMPDIR then table.insert(tmpdirs, vim.env.TMPDIR .. "/*") end
 
 local function copy(value)
   vim.fn.setreg("+", value)
@@ -76,7 +82,7 @@ return {
         spellfile = data_dir .. "/spell/en.utf-8.add",
         history = 2000,
         shada = "!,'300,<50,@100,s10,h",
-        backupskip = { "/tmp/*", vim.env.TMPDIR .. "/*", "*/shm/*", "/private/var/*", ".vault.vim" }, -- Secure sensitive information, disable backup files in temp directories
+        backupskip = tmpdirs, -- Secure sensitive information, disable backup files in temp directories
         breakindentopt = "shift:2,min:20",
         ttimeoutlen = 10, -- Time out on key codes
         list = true,
@@ -193,7 +199,7 @@ return {
       user_secure = {
         {
           event = { "BufNewFile", "BufReadPre" },
-          pattern = { "/tmp/*", vim.env.TMPDIR .. "/*", "*/shm/*", "/private/var/*", ".vault.vim" },
+          pattern = tmpdirs,
           desc = "Disable swap/undo/viminfo/shada files in temp directories or shm",
           group = "user_secure",
           command = "setlocal noswapfile noundofile nobackup nowritebackup viminfo= shada=",
