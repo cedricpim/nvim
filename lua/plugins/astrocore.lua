@@ -105,6 +105,9 @@ return {
         L = { function() require("astrocore.buffer").nav(vim.v.count1) end, desc = "Next buffer" },
         H = { function() require("astrocore.buffer").nav(-vim.v.count1) end, desc = "Previous buffer" },
 
+        ["<C-a>"] = { "<cmd>CodeCompanionActions<cr>", desc = "Open CodeCompanion Actions", nowait = true, silent = true },
+        ["<LocalLeader>a"] = { "<cmd>CodeCompanionChat Toggle<cr>", desc = "Toggle CodeCompanion Chat", nowait = true, silent = true },
+
         -- mappings seen under group name "Buffer"
         ["<Leader>bD"] = {
           function()
@@ -140,6 +143,11 @@ return {
       t = {
         -- setting a mapping to false will disable it
         -- ["<esc>"] = false,
+      },
+      v = {
+        ["<C-a>"] = { "<cmd>CodeCompanionActions<cr>", desc = "Open CodeCompanion Actions", nowait = true, silent = true },
+        ["<LocalLeader>a"] = { "<cmd>CodeCompanionChat Toggle<cr>", desc = "Toggle CodeCompanion Chat", nowait = true, silent = true },
+        ["ga"] = { "<cmd>CodeCompanionChat Add<cr>", desc = "Add visually selected chat to the current chat buffer", nowait = true, silent = true },
       },
       x = {
         ["v"] = { "<Plug>(expand_region_expand)" },
