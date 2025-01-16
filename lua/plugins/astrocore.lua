@@ -128,9 +128,18 @@ return {
           function() copy(vim.fn.expand "%:p" .. ":" .. vim.fn.line ".") end,
           desc = "Yank full path with line",
         },
-        ["<Leader>pr"] = { function() copy(vim.fn.expand "%") end, desc = "Yank relative path" },
+        ["<Leader>pr"] = {
+          function()
+            local full_path = vim.fn.expand("%")
+            copy(vim.fn.fnamemodify(full_path, ":~:."))
+          end,
+          desc = "Yank relative path"
+        },
         ["<Leader>pR"] = {
-          function() copy(vim.fn.expand "%" .. ":" .. vim.fn.line ".") end,
+          function()
+            local full_path = vim.fn.expand("%")
+            copy(vim.fn.fnamemodify(full_path, ":~:.") .. ":" .. vim.fn.line("."))
+          end,
           desc = "Yank relative path with line",
         },
         ["<Leader>bX"] = {
